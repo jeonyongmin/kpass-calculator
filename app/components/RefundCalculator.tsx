@@ -65,11 +65,18 @@ export default function RefundCalculator() {
     setErrors({});
     setResult(nextResult);
 
-    if (window.matchMedia("(max-width: 767px)").matches) {
-      window.requestAnimationFrame(() => {
-        resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
+    window.requestAnimationFrame(() => {
+      const resultElement = resultRef.current;
+      if (!resultElement) return;
+
+      const rect = resultElement.getBoundingClientRect();
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      const isResultStartHidden = rect.top < 80 || rect.top >= window.innerHeight;
+
+      if (isMobile || isResultStartHidden) {
+        resultElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
   }
 
   function handleReset() {
